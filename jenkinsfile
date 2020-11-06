@@ -1,0 +1,38 @@
+pipeline {
+    // The host will need to have docker installed to build the images
+    agent any
+    environment {
+        GIT_URL='https://github.com/jtom38/docker-ansible.git'
+        GIT_BRANCH='main'
+        DOCKER_TAG='2.9.11'
+        DOCKER_HUB_REPO='jtom38/ansible'
+    }
+
+    stages {
+        stage('Pull-Source') {
+            steps {
+                sh '''#!/bin/bash
+                git clone ${GIT_URL} workspace
+                cd ./workspace
+                git checkout ${GIT_BRANCH}
+                '''
+            }
+        }
+        stage('Build-Image-2.9') {
+            steps {
+                sh '''#!/bin/bash
+                #docker build -t ansible:2.9 ./workspace/.devcontainer/2.9.11/
+                make build-image-2.9
+                '''
+            }
+        }
+        stage('Build-Image-2.10.2') {
+            steps {
+                sh '''#!/bin/bash
+                #docker build -t ansible:2.10.2 ./workspace/.devcontainer/2.10.2/
+                make build-image-2.10
+                '''
+            }
+        }
+    }
+}
