@@ -26,12 +26,6 @@ RUN apt update -y \
     && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" \
     && apt install -y docker-ce-cli
 
-# Install Docker CE CLI. 
-#RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
-#    && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" \
-#    && apt-get update \
-#    && apt-get install -y docker-ce-cli
-
 RUN pip3 install \
     setuptools \
     molecule \
@@ -53,7 +47,6 @@ RUN pip3 install \
 RUN curl https://releases.hashicorp.com/terraform/${TF_VER}/terraform_${TF_VER}_linux_amd64.zip > /tmp/terraform.zip && \
     unzip -q /tmp/terraform.zip -d /bin/ && \
     /bin/terraform --version
-
 
 RUN pip3 install ansible==${ANSIBLE_VER}
 

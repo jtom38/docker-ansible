@@ -12,6 +12,11 @@ The image comes with support for the following:
 * [Molecule](https://molecule.readthedocs.io/en/latest/)
 * [Docker](www.docker.com)
 
+This pipeline will keep the two newest builds updated.  Any hot fixes that are pushed will be applied with its own tag.
+Terraform will be updated as new builds come out, and I see they need to be updated.
+
+If you have a package that is missing from this image and you think it would be great for others to have also, submit a PR with your requested change!
+
 ## Pulling this Image
 
 The images are stored in [Docker Hub](https://hub.docker.com/r/jtom38/ansible) and you can pull them down by the tag version.
