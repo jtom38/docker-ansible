@@ -6,6 +6,7 @@ pipeline {
         DOCKER_IMAGE='jtom38/ansible'
         DOCKER_TAG_1='2.9.11'
         DOCKER_TAG_2='2.10.3'
+        GITHUB_SITE='docker.pkg.github.com'
         TF_VER='0.13.5'
     }
 
@@ -51,6 +52,20 @@ pipeline {
                     sh '''#!/bin/bash
                     echo ${DOCKERPASS} | docker login -u jtom38 --password-stdin
                     docker push jtom38/ansible:2.9.11
+                    docker logout
+                    '''
+                }
+            }
+        }
+        stage('Push-Image-2.9-GH'){
+            steps {
+                withCredentials([string(credentialsId: 'github-password-secret', variable: 'DOCKERPASS')]) {
+                    sh '''#!/bin/bash
+                    echo ${DOCKERPASS} | docker login docker.pkg.github.com -u jtom38 --password-stdin
+                    docker tag jtom38/ansible:2.9.11 docker.pkg.github.com/jtom38/docker-ansible/ansible:2.9.11
+                    docker push docker.pkg.github.com/jtom38/docker-ansible/ansible:2.9.11
+                    docker logout ghcr.io
+                    docker rmi docker.pkg.github.com/jtom38/docker-ansible/ansible:2.9.11
                     '''
                 }
             }
@@ -60,7 +75,6 @@ pipeline {
                 sh '''#!/bin/bash
                 cd ./workspace
                 docker build -t jtom38/ansible:2.10.3 . --build-arg ANSIBLE_VER=2.10.3 --build-arg TF_VER=${TF_VER}
-                docker logout
                 '''
             }
         }
@@ -91,12 +105,24 @@ pipeline {
                 }
             }
         }
+        stage('Push-Image-2.10-GH'){
+            steps {
+                withCredentials([string(credentialsId: 'github-password-secret', variable: 'DOCKERPASS')]) {
+                    sh '''#!/bin/bash
+                    echo ${DOCKERPASS} | docker login docker.pkg.github.com -u jtom38 --password-stdin
+                    docker tag jtom38/ansible:2.10.3 docker.pkg.github.com/jtom38/docker-ansible/ansible:2.10.3
+                    docker push docker.pkg.github.com/jtom38/docker-ansible/ansible:2.10.3
+                    docker logout docker.pkg.github.com
+                    docker rmi docker.pkg.github.com/jtom38/docker-ansible/ansible:2.10.3
+                    '''
+                }
+            }
+        }
         stage('Build-Image-Latest') {
             steps {
                 sh '''#!/bin/bash
                 cd ./workspace
                 docker build -t jtom38/ansible:latest . --build-arg ANSIBLE_VER=2.10.3 --build-arg TF_VER=${TF_VER}
-                docker logout
                 '''
             }
         }
@@ -123,6 +149,19 @@ pipeline {
                     echo ${DOCKERPASS} | docker login -u jtom38 --password-stdin
                     docker push jtom38/ansible:latest
                     docker logout
+                    '''
+                }
+            }
+        }
+        stage('Push-Image-Latest-GH'){
+            steps {
+                withCredentials([string(credentialsId: 'github-password-secret', variable: 'DOCKERPASS')]) {
+                    sh '''#!/bin/bash
+                    echo ${DOCKERPASS} | docker login docker.pkg.github.com -u jtom38 --password-stdin
+                    docker tag jtom38/ansible:latest docker.pkg.github.com/jtom38/docker-ansible/ansible:latest
+                    docker push docker.pkg.github.com/jtom38/docker-ansible/ansible:latest
+                    docker logout docker.pkg.github.com
+                    docker rmi docker.pkg.github.com/jtom38/docker-ansible/ansible:latest
                     '''
                 }
             }
