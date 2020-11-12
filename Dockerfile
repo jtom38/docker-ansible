@@ -24,7 +24,10 @@ RUN apt update -y \
     sudo \
     && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
     && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" \
-    && apt install -y docker-ce-cli
+    && apt install -y docker-ce-cli \
+    && apt autoremove \
+    && apt clean \ 
+    && apt autoclean
 
 RUN pip3 install \
     setuptools \
